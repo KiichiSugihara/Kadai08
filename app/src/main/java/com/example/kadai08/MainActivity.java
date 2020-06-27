@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.MotionEvent;
 
 class BallSurfaceView implements View.OnTouchListener,SurfaceHolder.Callback,Runnable{
-    private  int x =0,y=0,dx=5,dy=5;
+    private  int x =0,y=0,dx=5,dy=5,tx=0,ty=0,ux=0,uy=0;
     int screen_width,screen_height;
     private Thread thread;
     private SurfaceHolder holder;
@@ -31,15 +31,25 @@ class BallSurfaceView implements View.OnTouchListener,SurfaceHolder.Callback,Run
     public  void surfaceDestroyed(SurfaceHolder holder){
         thread=null;
     }
+
     public boolean onTouch(View v, MotionEvent event){
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                x=(int) event.getX();
-                y=(int) event.getY();
+                tx=(int) event.getX();
+                ty=(int) event.getY();
+                break;
+            case MotionEvent.ACTION_UP:
+                ux=(int) event.getX();
+                uy=(int) event.getY();
+                // 角度求める
+                double radian = Math.atan2(uy - ty,ux - tx);
+                dx= (int) ((float) Math.cos(radian) * 5);
+                dy= (int) ((float) Math.sin(radian) * 5);
                 break;
         }
         return true;
     }
+
     public  void run(){
         while (thread!=null){
             Canvas canvas=holder.lockCanvas();
