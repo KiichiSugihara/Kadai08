@@ -6,8 +6,10 @@ import android.graphics.Paint;
 import  android.os.Bundle;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.MotionEvent;
 
-class BallSurfaceView implements SurfaceHolder.Callback,Runnable{
+class BallSurfaceView implements View.OnTouchListener,SurfaceHolder.Callback,Runnable{
     private  int x =0,y=0,dx=5,dy=5;
     int screen_width,screen_height;
     private Thread thread;
@@ -16,6 +18,7 @@ class BallSurfaceView implements SurfaceHolder.Callback,Runnable{
     BallSurfaceView(SurfaceView sv){
         holder=sv.getHolder();
         holder.addCallback(this);
+        sv.setOnTouchListener(this);
     }
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
         screen_width=width;
@@ -27,6 +30,15 @@ class BallSurfaceView implements SurfaceHolder.Callback,Runnable{
     }
     public  void surfaceDestroyed(SurfaceHolder holder){
         thread=null;
+    }
+    public boolean onTouch(View v, MotionEvent event){
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                x=(int) event.getX();
+                y=(int) event.getY();
+                break;
+        }
+        return true;
     }
     public  void run(){
         while (thread!=null){
